@@ -1,0 +1,28 @@
+FROM ubuntu:latest
+MAINTAINER 2367192101@qq.com
+
+ENV TZ "Asia/Shanghai"
+ENV JAVA_HOME "/jdk"
+ENV JRE_HOME "/jdk/jre"
+ENV JENKINS_HOME "/jenkins"
+ENV MAVEN_HOME "/maven-3.5.2"
+
+COPY jdk1.8.0_131 /jdk
+COPY maven-3.5.2 /maven-3.5.2
+COPY jenkins.war /opt/
+RUN mkdir /jenkins && \
+    ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone && \
+    apt-get -y update && \
+    apt-get -y install python-pip python 
+RUN  pip install --upgrade pip && \
+     pip install kubernetes && \
+    apt-get clean all
+RUN apt-get -y install git && \
+    apt-get clean all
+COPY .ssh /root/.ssh
+RUN git config --global user.name jenkins && \
+    git config --global user.email jenkins@gpdi.com
+WORKDIR "/jenkins"
+VOLUME "/jenkins"
+expose 8080
+CMD ["/jdk/bin/java","-jar","-Xms512m","-Xmx1024m","-XX:ParallelGCThreads=4","-XX:ConcGCThreads=4","-Dhudson.slaves.ChannelPinger.pingInterval=-1","-Dhudson.security.ExtendedReadPermission=true","-Dgroovy.use.classvalue=true","/opt/jenkins.war"]
