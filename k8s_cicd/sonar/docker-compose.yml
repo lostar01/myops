@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  sonar:
+    restart: always
+    image: sonarqube:latest
+    container_name: sonar-1
+    cpu_shares: 70
+    mem_limit: 2048MB
+    ports:
+    - "9000:9000"
+    - "9092:9092"
+    environment:
+    - DEBUG=false
+

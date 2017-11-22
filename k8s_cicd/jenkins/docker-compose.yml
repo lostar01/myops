@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  jenkins:
+    restart: always
+    container_name: jenkins
+    image: registry.mydomain.com/jenkins:v5
+    cpu_shares: 70
+    mem_limit: 2048M
+    extra_hosts:
+    - "registry.mydomain.com:120.25.86.186"
+    - "kube-master:120.24.53.207"
+    ports:
+    - "9090:8080"
+    volumes:
+    - /data/docker/jenkins:/jenkins:Z
+    - /usr/bin/docker:/usr/bin/docker
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /usr/lib/x86_64-linux-gnu/libltdl.so.7:/usr/lib/x86_64-linux-gnu/libltdl.so.7
+    - /usr/share/zoneinfo/Asia/Shanghai:/usr/share/zoneinfo/Asia/Shanghai
+    - /etc/docker/certs.d/registry.mydomain.com/ca.crt:/etc/docker/certs.d/registry.mydomain.com/ca.crt
+    - /root/.kube:/root/.kube
+    - /usr/bin/kubectl:/usr/bin/kubectl
+    - /data/maven-repos:/root/.m2
+    environment:
+    - DEBUG=false

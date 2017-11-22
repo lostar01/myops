@@ -1,0 +1,34 @@
+version: '2'
+
+services:
+  docker-registry:
+    restart: always
+    image: registry:2.6.2
+    container_name: docker-registry-1
+    cpu_shares: 50
+    mem_limit: 512MB
+    volumes:
+    - /data/docker/registry:/var/lib/registry:z
+    environment:
+    - DEBUG=false
+
+  registry-proxy:
+    restart: always
+    depends_on:
+    - docker-registry
+    image: containersol/docker-registry-proxy
+    container_name: registry-proxy-1
+    cpu_shares: 30
+    mem_limit: 256MB
+    ports:
+    - "443:443"
+    links:
+    - docker-registry
+    volumes:
+    - /data/docker/registryconf/docker-registry.passwd:/etc/nginx/.htpasswd:ro
+    - /data/docker/registryconf:/etc/nginx/ssl:ro
+    environment:
+    - DEBUG=false
+    - REGISTRY_HOST=docker-registry
+    - REGISTRY_PORT=5000
+    - SERVER_NAME="registry.mydomain.com"

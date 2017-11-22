@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+  registry:
+    restart: always
+    image: registry:2.6.2
+    container_name: registry-1
+    cpu_shares: 50
+    mem_limit: 512MB
+    ports:
+    - "50000:5000"
+    volumes:
+    - /data/docker/registry:/var/lib/registry:z
+    environment:
+    - DEBUG=false
+
