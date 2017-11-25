@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+    name: redis-sgtc-release
+spec:
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: redis-sgtc-release-1
+        spec:
+            containers:
+            - name: redis-sgtc-release-1
+              image: registry.my.com/redis
+              ports:
+              - containerPort: 6379
+              resources:
+                requests:
+                  memory: "128Mi"
+                  cpu: "125m"
+                limits:
+                  memory: "1536Mi"
+                  cpu: "300m"            
